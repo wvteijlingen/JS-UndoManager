@@ -19,7 +19,7 @@ Every UndoManager keeps it's own undo and redo stacks. You can use multiple inst
 Registering undo actions is done using `registerUndoAction(target, func, arg, data)`. When the action is undone, the function `func` will be called with the array `arg` as arguments and `target` as `this`.
 When an action is registered while undoing, it is added to the redo stack. This way, the redo stack is automatically populated.
 
-````js
+````javascript
 var value = 0;
 
 var manager = new UndoManager();
@@ -27,13 +27,12 @@ var manager = new UndoManager();
 function changeSomething(newValue) {
   //Push the old value to the undo stack.
   manager.registerUndoAction(this, changeSomething, [value]);
-  
   value = newValue;
 }
 ````
 
 ###Performing undo and redo###
-````js
+````javascript
 manager.undo();
 manager.redo();
 ````
@@ -50,7 +49,7 @@ Set to 'null' to have unlimited levels.
 
 Undo actions can be grouped. Grouped actions will be undone and redone as one.
 Opening and closing group is done as follows. Multiple groups can be nested within each other. Just make sure to balance begin and end calls.
-````js
+````javascript
 manager.beginGrouping();
 //Make changes here
 manager.endGrouping();
@@ -61,7 +60,7 @@ Sometimes you want to make a lot of changes but really only need to save the fir
 Groups can automatically coalesce these actions for you. This is done by setting the coalesce mode when beginning a group.
 UndoManager supports 4 coalesce modes. When you don't explicitly pass a coalesce mode, the default mode _NONE_ will be used.
 
-````js
+````javascript
 manager.beginGrouping(UndoManager.COALESCE_MODE.CONSECUTIVE_DUPLICATES);
 //Make changes here
 manager.endGrouping();
@@ -87,7 +86,7 @@ UndoManager dispatches several events to keep you posted of changes in the undo 
 Dispatched when an action is undone.
 
 ####onredo####
-Dispatched when an action is redo.
+Dispatched when an action is redone.
 
 ####onchange####
-Dispatched when a change is the undo/redo stack occurred.
+Dispatched when a change in the undo/redo stack occurred.
