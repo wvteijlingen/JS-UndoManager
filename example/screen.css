@@ -1,0 +1,19 @@
+html, body {
+	padding: 0px;
+	margin: 0px;
+}
+
+#draggable, .shadow {
+	width: 100px;
+	height:100px;
+}
+
+#draggable {
+	background-color: lightblue;
+	z-index: 2000;
+}
+
+.shadow {
+	background-color: rgba(0,0,0,0.1);
+	position: absolute;
+}

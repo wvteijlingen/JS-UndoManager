@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title></title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width">
+	<link rel="stylesheet" href="screen.css">
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="../src/UndoManager.js"></script>
+	<script type="text/javascript" src="jquery-ui-1.10.2.custom.min.js"></script>
+</head>
+<body>
+	<div id="draggable">Drag me</div>
+	<button id="undoButton" type="button">Undo</button>
+	<button id="redoButton" type="button">Redo</button>
+</body>
+</html>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	//Our model
+	var position = {x: 0, y: 0};
+
+	$draggable = $("#draggable");
+	var undoManager = new UndoManager();
+
+	//Update the buttons for the first time
+	updateButtons();
+
+	//Update the box position on undo and redo
+	undoManager.onundo = undoManager.onredo = function() {
+		$draggable.css('left', position.x);
+		$draggable.css('top', position.y);
+
+		console.log("setPosition(" + position.x + "," + position.y + ")");
+	};
+
+
+	$draggable.draggable({
+		start: function() {
+			undoManager.beginGrouping(UndoManager.COALESCE_MODE.CONSECUTIVE_DUPLICATES);
+		},
+		drag: function() {
+			var position = $draggable.position();
+			setPosition(position.left, position.top);
+		},
+		stop: function() {
+			undoManager.endGrouping();
+			updateButtons();
+			var position = $draggable.position();
+			$("body").append('<div class="shadow" style="left:' + position.left + 'px;top:' + position.top + 'px;"></div>');
+		}
+	});
+
+	//Set the positon in the model
+	function setPosition(newX, newY) {
+		undoManager.registerUndoAction(null, setPosition, [position.x, position.y]);
+		position = {x: newX, y: newY};
+		updateButtons();
+	}
+
+	//Enable or disable the buttons
+	function updateButtons() {
+		if(!undoManager.canUndo()) {
+			$("#undoButton").attr('disabled', 'disabled');
+		} else {
+			$("#undoButton").removeAttr('disabled');
+		}
+
+		if(!undoManager.canRedo()) {
+			$("#redoButton").attr('disabled', 'disabled');
+		} else {
+			$("#redoButton").removeAttr('disabled');
+		}
+	}
+
+	//Undo on click
+	$("#undoButton").click(function(e){
+		undoManager.undo();
+		updateButtons();
+	});
+
+	//Redo on click
+	$("#redoButton").click(function(e){
+		undoManager.redo();
+		updateButtons();
+	});
+});
+</script>
