@@ -46,9 +46,12 @@ $(document).ready(function(){
 			setPosition(position.left, position.top);
 		},
 		stop: function() {
+			var position = $draggable.position();
+			setPosition(position.left, position.top);
+
 			undoManager.endGrouping();
 			updateButtons();
-			var position = $draggable.position();
+			
 			$("body").append('<div class="shadow" style="left:' + position.left + 'px;top:' + position.top + 'px;"></div>');
 		}
 	});
