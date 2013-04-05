@@ -17,7 +17,7 @@ Every UndoManager keeps it's own undo and redo stacks. You can use multiple inst
 
 ###Registering undo actions###
 Registering undo actions is done using `registerUndoAction(target, func, arg, data)`. When the action is undone, the function `func` will be called with the array `arg` as arguments and `target` as `this`.
-When an action is registered while undoing, it is added to the redo stack. This way, the redo stack is automatically populated.
+When an action is registered while undoing, it is added to the redo stack. This way, the redo stack is automatically populated. Registering an action while not undoing or redoing will clear the redo stack to ensure integrity and avoid invalid states.
 
 ````javascript
 var value = 0;
@@ -30,6 +30,15 @@ function changeSomething(newValue) {
   value = newValue;
 }
 ````
+
+You can also register an anonymous function as an undo action:
+
+````javascript
+manager.registerUndoFunction(function() {
+  //Do something
+});
+````
+
 
 ###Performing undo and redo###
 ````javascript
@@ -50,7 +59,7 @@ Set to 'null' to have unlimited levels.
 Undo actions can be grouped. Grouped actions will be undone and redone as one.
 Opening and closing group is done as follows. Multiple groups can be nested within each other. Just make sure to balance begin and end calls.
 ````javascript
-manager.beginGrouping();
+manclearRedoager.beginGrouping();
 //Make changes here
 manager.endGrouping();
 ````
@@ -72,11 +81,18 @@ No coalescing. All actions will be recorded and undone / redone. (AAABBB > AAABB
 ####UndoManager.COALESCE_MODE.FIRST####
 Only record the first registed action. (AAABBB > A)
 
+####UndoManager.COALESCE_MODE.LAST####
+Only record the last registered action. (AAABBB > B)
+
 ####UndoManager.COALESCE_MODE.CONSECUTIVE_DUPLICATES####
 Only record action if it's not the same function as the previous recorded action. (AAABBB > AB)
 
 ####UndoManager.COALESCE_MODE.DUPLICATES####
 Only record action if it's not a duplicate of any previous recorded action. (ABABAB > AB);
+
+
+###Altering the undo and redo stacks###
+You can manually empty the undo and redo stacks by using `clearUndo()` and `clearRedo()`.
 
 
 ###Events###

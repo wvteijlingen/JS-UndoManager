@@ -47,46 +47,41 @@
 	}
 
 	ActionGroup.prototype.addAction = function(action) {
-		if(this._shouldAdd(action)) {
-			action.parentGroup = this;
-			this.actions.push(action);
-		}
-	};
-
-	ActionGroup.prototype._shouldAdd = function(action) {
-		var shouldAdd = true;
+		action.parentGroup = this;
 
 		switch(this.mode) {
 			case UndoManager.COALESCE_MODE.FIRST:
-				shouldAdd = (this.actions.length === 0);
+				if(this.actions.length === 0) {
+					this.actions.push(action);
+				}
+				break;
+
+			case UndoManager.COALESCE_MODE.LAST:
+				this.actions[0] = action;
 				break;
 
 			case UndoManager.COALESCE_MODE.CONSECUTIVE_DUPLICATES:
-				shouldAdd = (this.actions.length === 0 || action.func !== this.actions[this.actions.length-1].func);
+				if(this.actions.length === 0 || action.func !== this.actions[this.actions.length-1].func) {
+					this.actions.push(action);
+				}
 				break;
 
 			case UndoManager.COALESCE_MODE.DUPLICATES:
 				for (var i = this.actions.length - 1; i >= 0; i--) {
-					if( this.actions[i].func === action.func) {
-						shouldAdd = false;
+					if(this.actions[i].func === action.func) {
+						this.actions.push(action);
 						break;
 					}
 				}
 				break;
 			default:
-				shouldAdd = true;
+				this.actions.push(action);
 		}
-
-		return shouldAdd;
 	};
 
 	ActionGroup.prototype.addGroup = function(actionGroup) {
 		actionGroup.parentGroup = this;
 		this.actions.push(actionGroup);
-	};
-
-	ActionGroup.prototype.getCoalescedActions = function() {
-		return this.actions;
 	};
 
 	ActionGroup.prototype.perform = function() {
@@ -212,6 +207,7 @@
 
 			if(this._groupLevel !== 0) {
 				this._openGroupRef.addAction(action);
+
 				//console.log("---- Added undo action to group: " + arg[0]);
 			} else {
 				if(this._state === this.STATE_UNDOING) {
@@ -227,11 +223,15 @@
 					//console.log("---- Added undo action to undo stack: " + arg[0]);
 				}
 			}
+
+			if(this._state === this.STATE_COLLECTING_ACTIONS) {
+				this.clearRedo();
+			}
 		};
 
 		/**
 		 * Register an undo function.
-		 * @param  funciton func   The function to call when undoing.
+		 * @param  function func   The function to call when undoing.
 		 */
 		this.registerUndoFunction = function(func, data) {
 			this.registerUndoAction(null, func, null, data);
@@ -331,6 +331,12 @@
 		 * AAABBB > A
 		 */
 		FIRST: "first",
+
+		/**
+		 * Only record the last registered action
+		 * AAABBB > B
+		 */
+		LAST: "last",
 
 		/**
 		 * Only record action if it's not the same function as the previous recorded action
