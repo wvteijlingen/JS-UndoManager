@@ -1,12 +1,28 @@
-UndoManager = (function(){
+/**
+ * UMD
+ */
+(function (root, factory) {
+	if (typeof exports === 'object') {
+		// Node. Does not work with strict CommonJS, but
+		// only CommonJS-like enviroments that support module.exports,
+		// like Node.
+		module.exports = factory();
+	} else if (typeof define === 'function' && define.amd) {
+		// AMD. Register as an anonymous module.
+		define(factory);
+	} else {
+		// Browser globals (root is window)
+		root.UndoManager = factory();
+  }
+}(this, function () {
 	"use strict";
+
 
 	/**
 	 * --------------
 	 * UndoAction
 	 * --------------
 	 */
-
 	function UndoAction(target, func, arg, data) {
 		this.target = target;
 		this.func = func;
@@ -19,14 +35,11 @@ UndoManager = (function(){
 		this.func.apply(this.target, this.arg);
 	};
 
-
-
 	/**
 	 * --------------
 	 * ActionGroup
 	 * --------------
 	 */
-
 	function ActionGroup(mode) {
 		this.actions = [];
 		this.mode = (mode || UndoManager.COALESCE_MODE.NONE);
@@ -87,36 +100,6 @@ UndoManager = (function(){
 	 * --------------
 	 * UndoManager
 	 * --------------
-	 */
-	
-	UndoManager.COALESCE_MODE = {
-		/**
-		 * No coalescing
-		 * AAABBB > AAABBB
-		 */
-		NONE: "none",
-
-		/**
-		 * Only record the first registed action
-		 * AAABBB > A
-		 */
-		FIRST: "first",
-
-		/**
-		 * Only record action if it's not the same function as the previous recorded action
-		 * AAABBB > AB
-		 */
-		CONSECUTIVE_DUPLICATES: "concecutiveDuplicates",
-		
-		/**
-		 * Only record action if it's not a duplicate of any previous recorded action
-		 * ABABAB > AB
-		 */
-		DUPLICATES: "duplicates"
-	};
-
-	/**
-	 * The UndoManager object
 	 * Every UndoManager keeps has it's own undo and redo stacks.
 	 * You can use multiple instances to have separate undo contexts.
 	 */
@@ -333,5 +316,36 @@ UndoManager = (function(){
 		};
 	}
 
-return UndoManager;
-})();
+	/**
+	 * Coalesce modes
+	 */
+	UndoManager.COALESCE_MODE = {
+		/**
+		 * No coalescing
+		 * AAABBB > AAABBB
+		 */
+		NONE: "none",
+
+		/**
+		 * Only record the first registed action
+		 * AAABBB > A
+		 */
+		FIRST: "first",
+
+		/**
+		 * Only record action if it's not the same function as the previous recorded action
+		 * AAABBB > AB
+		 */
+		CONSECUTIVE_DUPLICATES: "concecutiveDuplicates",
+		
+		/**
+		 * Only record action if it's not a duplicate of any previous recorded action
+		 * ABABAB > AB
+		 */
+		DUPLICATES: "duplicates"
+	};
+
+	return UndoManager;
+
+
+}));
