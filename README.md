@@ -11,6 +11,10 @@ Features
 - Limiting the maximum stored undo actions.
 - Events.
 
+Example
+--------
+See projects.wardvanteijlingen.nl/JS-UndoManager
+
 Usage
 --------
 Every UndoManager keeps it's own undo and redo stacks. You can use multiple instances to have separate undo contexts.
@@ -59,7 +63,7 @@ Set to 'null' to have unlimited levels.
 Undo actions can be grouped. Grouped actions will be undone and redone as one.
 Opening and closing group is done as follows. Multiple groups can be nested within each other. Just make sure to balance begin and end calls.
 ````javascript
-manclearRedoager.beginGrouping();
+manager.beginGrouping();
 //Make changes here
 manager.endGrouping();
 ````
@@ -67,7 +71,7 @@ manager.endGrouping();
 ###Coalescing actions###
 Sometimes you want to make a lot of changes but really only need to save the first or last change. For example when a lot of mouse events are fired, which all update a model property.
 Groups can automatically coalesce these actions for you. This is done by setting the coalesce mode when beginning a group.
-UndoManager supports 4 coalesce modes. When you don't explicitly pass a coalesce mode, the default mode _NONE_ will be used.
+UndoManager supports several coalesce modes. When you don't explicitly pass a coalesce mode, the default mode _NONE_ will be used.
 
 ````javascript
 manager.beginGrouping(UndoManager.COALESCE_MODE.CONSECUTIVE_DUPLICATES);
