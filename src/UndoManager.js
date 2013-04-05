@@ -227,6 +227,8 @@
 			if(this._state === this.STATE_COLLECTING_ACTIONS) {
 				this.clearRedo();
 			}
+
+			this._dispatch(this.onchange);
 		};
 
 		/**
