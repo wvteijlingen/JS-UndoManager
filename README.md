@@ -79,19 +79,19 @@ manager.beginGrouping(UndoManager.COALESCE_MODE.CONSECUTIVE_DUPLICATES);
 manager.endGrouping();
 ````
 
-####UndoManager.COALESCE_MODE.NONE####
+#####UndoManager.COALESCE_MODE.NONE#####
 No coalescing. All actions will be recorded and undone / redone. (AAABBB > AAABBB)
 
-####UndoManager.COALESCE_MODE.FIRST####
+#####UndoManager.COALESCE_MODE.FIRST#####
 Only record the first registed action. (AAABBB > A)
 
-####UndoManager.COALESCE_MODE.LAST####
+#####UndoManager.COALESCE_MODE.LAST#####
 Only record the last registered action. (AAABBB > B)
 
-####UndoManager.COALESCE_MODE.CONSECUTIVE_DUPLICATES####
+#####UndoManager.COALESCE_MODE.CONSECUTIVE_DUPLICATES#####
 Only record action if it's not the same function as the previous recorded action. (AAABBB > AB)
 
-####UndoManager.COALESCE_MODE.DUPLICATES####
+#####UndoManager.COALESCE_MODE.DUPLICATES#####
 Only record action if it's not a duplicate of any previous recorded action. (ABABAB > AB);
 
 
@@ -102,11 +102,11 @@ You can manually empty the undo and redo stacks by using `clearUndo()` and `clea
 ###Events###
 UndoManager dispatches several events to keep you posted of changes in the undo context.
 
-####onundo####
+#####onundo#####
 Dispatched when an action is undone.
 
-####onredo####
+#####onredo#####
 Dispatched when an action is redone.
 
-####onchange####
+#####onchange#####
 Dispatched when a change in the undo/redo stack occurred.
