@@ -13,7 +13,7 @@ Features
 
 Example
 --------
-See projects.wardvanteijlingen.nl/JS-UndoManager
+See http://projects.wardvanteijlingen.nl/JS-UndoManager
 
 Usage
 --------
