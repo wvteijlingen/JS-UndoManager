@@ -29,10 +29,14 @@
 		this.arg = arg;
 		this.data = data;
 		this.parentGroup = null;
+		this.onperform = null;
 	}
 
 	UndoAction.prototype.perform = function() {
 		this.func.apply(this.target, this.arg);
+		if(typeof this.onperform === "function") {
+			this.onperform(this);
+		}
 	};
 
 	/**
@@ -112,9 +116,34 @@
 		this._groupLevel = 0;
 		this._maxUndoLevels = null;
 
-		//Events
+		/**
+		 * Dispatched when an action is undone.
+		 * This callback is passed 1 argument containing the following values:
+		 * - Data: The data passed when the action was registered.
+		 * - Manager: The UndoManager that performed the action.
+		 * 
+		 * @type Function
+		 */
 		this.onundo = null;
+		
+		/**
+		 * Dispatched when an action is redone.
+		 * This callback is passed 1 argument containing the following values:
+		 * - Data: The data passed when the action was registered.
+		 * - Manager: The UndoManager that performed the action.
+		 * 
+		 * @type Function
+		 */
 		this.onredo = null;
+
+		/**
+		 * Called when something changes in the undo or redo stack.
+		 * For example: when a new action is registered or when undo/redo is called.
+		 * This callback is passed 1 argument containing the following values:
+		 * - Manager: The UndoManager that performed the action.
+		 * 
+		 * @type Function
+		 */
 		this.onchange = null;
 
 
@@ -173,7 +202,7 @@
 
 			this._state = this.STATE_COLLECTING_ACTIONS;
 
-			this._dispatch(this.onundo);
+			this._dispatch(this.onchange, {manager: this});
 		};
 
 
@@ -192,7 +221,7 @@
 
 			this._state = this.STATE_COLLECTING_ACTIONS;
 
-			this._dispatch(this.onredo);
+			this._dispatch(this.onchange, {manager: this});
 		};
 
 		/**
@@ -204,6 +233,7 @@
 		 */
 		this.registerUndoAction = function(target, func, arg, data) {
 			var action = new UndoAction(target, func, arg, data);
+			action.onperform = this._onActionPerform.bind(this); //Callback
 
 			if(this._groupLevel !== 0) {
 				this._openGroupRef.addAction(action);
@@ -228,7 +258,7 @@
 				this.clearRedo();
 			}
 
-			this._dispatch(this.onchange);
+			this._dispatch(this.onchange, {manager: this});
 		};
 
 		/**
@@ -313,8 +343,16 @@
 			return group;
 		};
 
-		this._dispatch = function(callback){
-			if(typeof callback === "function") callback();
+		this._dispatch = function(callback, arg){
+			if(typeof callback === "function") callback(arg);
+		};
+
+		this._onActionPerform = function(action) {
+			//Pass through
+			var callbackData = {data: action.data, manager: this};
+
+			var callback = (this._state === this.STATE_UNDOING) ? this.onundo : this.onredo;
+			this._dispatch(callback, callbackData);
 		};
 	}
 

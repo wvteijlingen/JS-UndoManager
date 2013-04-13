@@ -29,13 +29,23 @@ $(document).ready(function(){
 	updateButtons();
 
 	//Update the box position on undo and redo
-	undoManager.onundo = undoManager.onredo = function() {
+	undoManager.onundo = function(e) {
 		$draggable.css('left', position.x);
 		$draggable.css('top', position.y);
 
-		console.log("setPosition(" + position.x + "," + position.y + ")");
+		console.log("Undid action: " + e.data.type);
 	};
 
+	undoManager.onredo = function(e) {
+		$draggable.css('left', position.x);
+		$draggable.css('top', position.y);
+
+		console.log("Redid action: " + e.data.type);
+	}
+
+	undoManager.onchange = function(e) {
+		updateButtons();
+	}
 
 	$draggable.draggable({
 		start: function() {
@@ -58,7 +68,7 @@ $(document).ready(function(){
 
 	//Set the positon in the model
 	function setPosition(newX, newY) {
-		undoManager.registerUndoAction(null, setPosition, [position.x, position.y]);
+		undoManager.registerUndoAction(null, setPosition, [position.x, position.y], {type: "move"});
 		position = {x: newX, y: newY};
 		updateButtons();
 	}
@@ -81,13 +91,11 @@ $(document).ready(function(){
 	//Undo on click
 	$("#undoButton").click(function(e){
 		undoManager.undo();
-		updateButtons();
 	});
 
 	//Redo on click
 	$("#redoButton").click(function(e){
 		undoManager.redo();
-		updateButtons();
 	});
 });
 </script>

@@ -103,10 +103,19 @@ You can manually empty the undo and redo stacks by using `clearUndo()` and `clea
 UndoManager dispatches several events to keep you posted of changes in the undo context.
 
 #####onundo#####
-Dispatched when an action is undone.
+Dispatched when an action is undone. This is fired for each action if entire groups are undone/redone.
+This callback is passed 1 argument containing the following values:
+*Data: The data passed when the action was registered.
+*Manager: The UndoManager that performed the action.
 
 #####onredo#####
-Dispatched when an action is redone.
+Dispatched when an action is redone. This is fired for each action if entire groups are undone/redone.
+This callback is passed 1 argument containing the following values:
+*Data: The data passed when the action was registered.
+*Manager: The UndoManager that performed the action.
 
 #####onchange#####
 Dispatched when a change in the undo/redo stack occurred.
+For example: when a new action is registered or when undo/redo is called.
+This callback is passed 1 argument containing the following values:
+*Manager: The UndoManager that performed the action.
