@@ -20,7 +20,9 @@ Usage
 Every UndoManager keeps it's own undo and redo stacks. You can use multiple instances to have separate undo contexts.
 
 ###Registering undo actions###
-Registering undo actions is done using `registerUndoAction(target, func, arg, data)`. When the action is undone, the function `func` will be called with the array `arg` as arguments and `target` as `this`.
+Registering undo actions is done using `registerUndoAction(target, func, arg, data)`.
+When the action is undone, the function `func` will be called with the array `arg` as arguments and `target` as `this`.
+The `data` argument is optional and purely for the programmer, it will be passed back in the callbacks. You can use it to identify which action is undone/redone.
 When an action is registered while undoing, it is added to the redo stack. This way, the redo stack is automatically populated. Registering an action while not undoing or redoing will clear the redo stack to ensure integrity and avoid invalid states.
 
 ````javascript
@@ -29,8 +31,10 @@ var value = 0;
 var manager = new UndoManager();
 
 function changeSomething(newValue) {
+  var userData = {kind: "valueChange"};
+
   //Push the old value to the undo stack.
-  manager.registerUndoAction(this, changeSomething, [value]);
+  manager.registerUndoAction(this, changeSomething, [value], userData);
   value = newValue;
 }
 ````
@@ -38,9 +42,10 @@ function changeSomething(newValue) {
 You can also register an anonymous function as an undo action:
 
 ````javascript
+var userData = {kind: "something"};
 manager.registerUndoFunction(function() {
   //Do something
-});
+}, userData);
 ````
 
 
@@ -105,17 +110,16 @@ UndoManager dispatches several events to keep you posted of changes in the undo 
 #####onundo#####
 Dispatched when an action is undone. This is fired for each action if entire groups are undone/redone.
 This callback is passed 1 argument containing the following values:
-*Data: The data passed when the action was registered.
-*Manager: The UndoManager that performed the action.
+- Data: The data passed when the action was registered.
+- Manager: The UndoManager that performed the action.
 
 #####onredo#####
 Dispatched when an action is redone. This is fired for each action if entire groups are undone/redone.
 This callback is passed 1 argument containing the following values:
-*Data: The data passed when the action was registered.
-*Manager: The UndoManager that performed the action.
+- Data: The data passed when the action was registered.
+- Manager: The UndoManager that performed the action.
 
 #####onchange#####
-Dispatched when a change in the undo/redo stack occurred.
-For example: when a new action is registered or when undo/redo is called.
+Dispatched when a change in the undo/redo stack occurred. For example: when a new action is registered or when undo/redo is called.
 This callback is passed 1 argument containing the following values:
-*Manager: The UndoManager that performed the action.
+- Manager: The UndoManager that performed the action.
