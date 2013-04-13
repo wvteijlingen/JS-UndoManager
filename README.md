@@ -123,3 +123,7 @@ This callback is passed 1 argument containing the following values:
 Dispatched when a change in the undo/redo stack occurred. For example: when a new action is registered or when undo/redo is called.
 This callback is passed 1 argument containing the following values:
 - Manager: The UndoManager that performed the action.
+
+TODO
+--------
+- Write tests
