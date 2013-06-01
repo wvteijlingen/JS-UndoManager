@@ -11,9 +11,14 @@ Features
 - Limiting the maximum stored undo actions.
 - Events.
 
-Example
+Demo
 --------
 See http://projects.wardvanteijlingen.nl/JS-UndoManager
+
+Installation
+--------
+JS-UndoManager embraces UMD by offering a brower global, AMD module and a Common JS like environment like Node.
+For browser globals, adding a <script> tag to the HTML document is enough. For AMD, you can use something like Require JS.
 
 Usage
 --------
