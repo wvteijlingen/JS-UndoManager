@@ -186,6 +186,22 @@
 		};
 
 		/**
+		 * Returns the amount of undo actions that can be undone.
+		 * @return int
+		 */
+		this.getUndoActionsCount = function() {
+			return this.undoStack.length;
+		};
+
+		/**
+		 * Returns the amount of redo actions that can be redone.
+		 * @return int
+		 */
+		this.getRedoActionsCount = function() {
+			return this.redoStack.length;
+		};
+
+		/**
 		 * Undoes the first item or group on the undo stack.
 		 * Throws an Error when there are no actions that can be undone.
 		 */
@@ -232,6 +248,10 @@
 		 * @param  object	data   An object containing custom data.
 		 */
 		this.registerUndoAction = function(target, func, arg, data) {
+			if(typeof func !== 'function') {
+				throw new TypeError('Expected func to be of type function. ' + typeof(func) + ' given.');
+			}
+
 			var action = new UndoAction(target, func, arg, data);
 			action.onperform = this._onActionPerform.bind(this); //Callback
 
