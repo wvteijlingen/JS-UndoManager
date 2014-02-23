@@ -30,16 +30,10 @@ $(document).ready(function(){
 
 	//Update the box position on undo and redo
 	undoManager.onundo = function(e) {
-		$draggable.css('left', position.x);
-		$draggable.css('top', position.y);
-
 		console.log("Undid action: " + e.data.type);
 	};
 
 	undoManager.onredo = function(e) {
-		$draggable.css('left', position.x);
-		$draggable.css('top', position.y);
-
 		console.log("Redid action: " + e.data.type);
 	}
 
@@ -66,11 +60,12 @@ $(document).ready(function(){
 		}
 	});
 
-	//Set the positon in the model
+	//Set the position in the model
 	function setPosition(newX, newY) {
 		undoManager.registerUndoAction(null, setPosition, [position.x, position.y], {type: "move"});
 		position = {x: newX, y: newY};
-		updateButtons();
+		$draggable.css('left', position.x);
+		$draggable.css('top', position.y);
 	}
 
 	//Enable or disable the buttons
