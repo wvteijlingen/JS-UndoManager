@@ -11,10 +11,6 @@ Features
 - Limiting the maximum stored undo actions.
 - Events.
 
-Demo
---------
-See http://projects.wardvanteijlingen.nl/JS-UndoManager
-
 Installation
 --------
 JS-UndoManager embraces UMD by offering a brower global, AMD module and a Common JS like environment like Node.
@@ -90,19 +86,19 @@ manager.endGrouping();
 ````
 
 #####UndoManager.COALESCE_MODE.NONE#####
-No coalescing. All actions will be recorded and undone / redone. (AAABBB > AAABBB)
+No coalescing. All actions will be recorded and undone / redone. (**AAABBB** > AAABBB)
 
 #####UndoManager.COALESCE_MODE.FIRST#####
-Only record the first registed action. (AAABBB > A)
+Only record the first registed action. (**A**AABBB > A)
 
 #####UndoManager.COALESCE_MODE.LAST#####
-Only record the last registered action. (AAABBB > B)
+Only record the last registered action. (AAABB**B** > B)
 
 #####UndoManager.COALESCE_MODE.CONSECUTIVE_DUPLICATES#####
-Only record action if it's not the same function as the previous recorded action. (AAABBB > AB)
+Only record action if it's not the same function as the previous recorded action. (**A**AA**B**BB > AB)
 
 #####UndoManager.COALESCE_MODE.DUPLICATES#####
-Only record action if it's not a duplicate of any previous recorded action. (ABABAB > AB);
+Only record action if it's not a duplicate of any previous recorded action. (**AB**ABAB > AB);
 
 
 ###Altering the undo and redo stacks###
