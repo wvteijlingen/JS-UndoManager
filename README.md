@@ -85,19 +85,19 @@ manager.beginGrouping(UndoManager.COALESCE_MODE.CONSECUTIVE_DUPLICATES);
 manager.endGrouping();
 ````
 
-#####UndoManager.COALESCE_MODE.NONE#####
+#####NONE#####
 No coalescing. All actions will be recorded and undone / redone. (**AAABBB** > AAABBB)
 
-#####UndoManager.COALESCE_MODE.FIRST#####
+#####FIRST#####
 Only record the first registed action. (**A**AABBB > A)
 
-#####UndoManager.COALESCE_MODE.LAST#####
+#####LAST#####
 Only record the last registered action. (AAABB**B** > B)
 
-#####UndoManager.COALESCE_MODE.CONSECUTIVE_DUPLICATES#####
+#####CONSECUTIVE_DUPLICATES#####
 Only record action if it's not the same function as the previous recorded action. (**A**AA**B**BB > AB)
 
-#####UndoManager.COALESCE_MODE.DUPLICATES#####
+#####DUPLICATES#####
 Only record action if it's not a duplicate of any previous recorded action. (**AB**ABAB > AB);
 
 
