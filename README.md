@@ -85,20 +85,13 @@ manager.beginGrouping(UndoManager.COALESCE_MODE.CONSECUTIVE_DUPLICATES);
 manager.endGrouping();
 ````
 
-#####NONE#####
-No coalescing. All actions will be recorded and undone / redone. (**AAABBB** > AAABBB)
-
-#####FIRST#####
-Only record the first registed action. (**A**AABBB > A)
-
-#####LAST#####
-Only record the last registered action. (AAABB**B** > B)
-
-#####CONSECUTIVE_DUPLICATES#####
-Only record action if it's not the same function as the previous recorded action. (**A**AA**B**BB > AB)
-
-#####DUPLICATES#####
-Only record action if it's not a duplicate of any previous recorded action. (**AB**ABAB > AB);
+Mode | Description | Example
+---- | ----------- | -------
+NONE | No coalescing. All actions will be recorded and undone / redone. | **AAABBB** > AAABBB
+FIRST | Only record the first registed action. | **A**AABBB > A
+LAST | Only record the last registered action. |AAABB**B** > B
+CONSECUTIVE_DUPLICATES | Only record action if it's not the same function as the previous recorded action. | **A**AA**B**BB > AB
+DUPLICATES |Only record action if it's not a duplicate of any previous recorded action. | **AB**ABAB > AB
 
 
 ###Altering the undo and redo stacks###
