@@ -1,7 +1,7 @@
 /**
  * UMD
  */
-(function (root, factory) {
+(((root, factory) => {
 	if (typeof exports === 'object') {
 		// Node. Does not work with strict CommonJS, but
 		// only CommonJS-like enviroments that support module.exports,
@@ -14,7 +14,7 @@
 		// Browser globals (root is window)
 		root.UndoManager = factory();
   }
-}(this, function () {
+})(this, () => {
 	"use strict";
 
 
@@ -357,13 +357,13 @@
 		 * @param  UndoAction action The action to wrap.
 		 * @return ActionGroup       The group containing the item.
 		 */
-		this._wrappedAction = function(action) {
+		this._wrappedAction = action => {
 			var group = new ActionGroup();
 			group.addAction(action);
 			return group;
 		};
 
-		this._dispatch = function(callback, arg){
+		this._dispatch = (callback, arg) => {
 			if(typeof callback === "function") callback(arg);
 		};
 

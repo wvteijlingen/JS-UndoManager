@@ -1,24 +1,24 @@
-describe("UndoManager, using grouping", function() {
+describe("UndoManager, using grouping", () => {
 	var undoManager;
 	var testVariable;
 	var accessor;
 
-	beforeEach(function() {
+	beforeEach(() => {
 		undoManager = new UndoManager();
 		testVariable = 0;
 		accessor = {
-			set: function(param) {
+			set(param) {
 				undoManager.registerUndoAction(this, accessor.set, [testVariable]);
 				this._realSet(param);
 			},
 
-			_realSet: function(param) {
+			_realSet(param) {
 				testVariable = param;
 			}
 		};
 	});
 
-	it("should be able to begin grouping with different coalesce modes", function() {
+	it("should be able to begin grouping with different coalesce modes", () => {
 		undoManager.beginGrouping();
 		undoManager.beginGrouping(UndoManager.COALESCE_MODE.NONE);
 		undoManager.beginGrouping(UndoManager.COALESCE_MODE.FIRST);
@@ -27,15 +27,15 @@ describe("UndoManager, using grouping", function() {
 		undoManager.beginGrouping(UndoManager.COALESCE_MODE.DUPLICATES);
 	});
 
-	it("should be able to end grouping", function() {
+	it("should be able to end grouping", () => {
 		undoManager.endGrouping();
 	});
 
 	/**
 	 * NONE
 	 */
-	describe("when multiple actions are registered in a group with coalescing mode NONE", function() {
-		beforeEach(function() {
+	describe("when multiple actions are registered in a group with coalescing mode NONE", () => {
+		beforeEach(() => {
 
 			undoManager.beginGrouping(UndoManager.COALESCE_MODE.NONE);
 			for (var i = 0; i < 3; i++) {
@@ -46,11 +46,11 @@ describe("UndoManager, using grouping", function() {
 			spyOn(accessor, '_realSet').andCallThrough();
 		});
 
-		it("should indicate that undo is available", function() {
+		it("should indicate that undo is available", () => {
 			expect(undoManager.canUndo()).toBeTruthy();
 		});
 
-		it("should undo all actions at once", function() {
+		it("should undo all actions at once", () => {
 			undoManager.undo();
 			
 			for (var i = 0; i < 3; i++) {
@@ -62,8 +62,8 @@ describe("UndoManager, using grouping", function() {
 	/**
 	 * FIRST
 	 */
-	describe("when multiple actions are registered in a group with coalescing mode FIRST", function() {
-		beforeEach(function() {
+	describe("when multiple actions are registered in a group with coalescing mode FIRST", () => {
+		beforeEach(() => {
 			undoManager.beginGrouping(UndoManager.COALESCE_MODE.FIRST);
 			for (var i = 0; i < 3; i++) {
 				accessor.set(i);
@@ -73,12 +73,12 @@ describe("UndoManager, using grouping", function() {
 			spyOn(accessor, '_realSet').andCallThrough();
 		});
 
-		it("should undo the first registered action", function() {
+		it("should undo the first registered action", () => {
 			undoManager.undo();
 			expect(accessor._realSet).toHaveBeenCalledWith(0);
 		});
 
-		it("should not undo the other registered actions", function() {
+		it("should not undo the other registered actions", () => {
 			undoManager.undo();
 
 			for (var i = 1; i < 3; i++) {
@@ -90,8 +90,8 @@ describe("UndoManager, using grouping", function() {
 	/**
 	 * LAST
 	 */
-	describe("when multiple actions are registered in a group with coalescing mode LAST", function() {
-		beforeEach(function() {
+	describe("when multiple actions are registered in a group with coalescing mode LAST", () => {
+		beforeEach(() => {
 			undoManager.beginGrouping(UndoManager.COALESCE_MODE.LAST);
 			for (var i = 0; i < 3; i++) {
 				accessor.set(i);
@@ -101,7 +101,7 @@ describe("UndoManager, using grouping", function() {
 			spyOn(accessor, '_realSet').andCallThrough();
 		});
 
-		it("should undo only the last registered action", function() {
+		it("should undo only the last registered action", () => {
 			undoManager.undo();
 			
 			expect(accessor._realSet).toHaveBeenCalledWith(2);
